@@ -106,6 +106,12 @@
       var canvas = document.getElementById('canvas');
       spinner.className = '';
 
+      // LÖVE ustawia tytuł karty z conf.lua (nazwa szablonu); zostawiamy nazwę gry
+      var tytul = document.title;
+      new MutationObserver(function () {
+        if (document.title !== tytul) document.title = tytul;
+      }).observe(document.querySelector('title'), { childList: true, characterData: true, subtree: true });
+
       // Paczkę gry pobieramy sami, zawsze świeżą (?v= to wersja ze Studia):
       // player zapamiętuje paczki w IndexedDB i sam dałby znajomym starą grę.
       // Silnik (love.wasm, 5 MB) zostaje w pamięci przeglądarki, więc drugi

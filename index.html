@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- Strona główna gier z Kodacy Studio. Wysyła ją Studio (server/publikacja.js);
+     listę gier bierze z gry.json, który Studio dopisuje przy każdej wysyłce. -->
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gry z Kodacy Studio</title>
+  <meta property="og:title" content="Gry z Kodacy Studio">
+  <meta property="og:description" content="Gry zrobione przez dzieci w Kodacy Studio. Kliknij i zagraj!">
+  <style>
+    :root { --tlo: #14121c; --karta: #211d30; --tekst: #f4f1ff; --przygaszony: #a9a3c2; --akcent: #ffcc33; }
+    body { margin: 0; background: var(--tlo); color: var(--tekst); font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { margin: 0 0 4px; font-size: 28px; }
+    p { color: var(--przygaszony); margin: 0 0 24px; }
+    .gry { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .gra { display: block; background: var(--karta); border-radius: 14px; overflow: hidden; color: inherit; text-decoration: none; }
+    .gra:hover, .gra:focus-visible { outline: 3px solid var(--akcent); }
+    .gra img { display: block; width: 100%; aspect-ratio: 4 / 3; image-rendering: pixelated; background: #000; }
+    .gra span { display: block; padding: 10px 12px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>🎮 Gry z Kodacy Studio</h1>
+    <p>Każdą z tych gier ktoś namalował i zaprogramował sam. Kliknij i zagraj!</p>
+    <div class="gry" id="gry"></div>
+  </main>
+  <script>
+    fetch('gry.json', { cache: 'no-store' })
+      .then(function (res) { return res.ok ? res.json() : []; })
+      .catch(function () { return []; })
+      .then(function (lista) {
+        var box = document.getElementById('gry');
+        if (!lista.length) { box.textContent = 'Jeszcze nie ma tu gier.'; return; }
+        lista.forEach(function (g) {
+          if (!/^[a-z0-9][a-z0-9-]*$/.test(g.id)) return;
+          var a = document.createElement('a');
+          a.className = 'gra';
+          a.href = 'gry/' + g.id + '/';
+          var img = document.createElement('img');
+          img.src = 'gry/' + g.id + '/okladka.png?v=' + (g.updated || 0);
+          img.alt = '';
+          img.loading = 'lazy';
+          var name = document.createElement('span');
+          name.textContent = g.name;
+          a.appendChild(img);
+          a.appendChild(name);
+          box.appendChild(a);
+        });
+      });
+  </script>
+</body>
+</html>
